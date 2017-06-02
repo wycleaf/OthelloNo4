@@ -21,8 +21,9 @@ public class Spieler implements OthelloSpieler
 	
 	Spieler (int suchtiefe)
 
-	{
+	{	if(suchtiefe > 7)
 		this.suchtiefe = suchtiefe;
+	else this.suchtiefe = 6;
 	}
 	
 	public Zug berechneZug(Zug vorherigerZug, long bedenkZeitWeiss, long bedenktZeitSchwarz) throws ZugException 
@@ -60,8 +61,6 @@ public class Spieler implements OthelloSpieler
 			gegner = Farbe.WEISS;
 		
 		ArrayList<Zug> drehsteine = new ArrayList<Zug>();
-//		if(brett.getSpielfeld()[zug.getZeile()][zug.getSpalte()] == Farbe.LEER)
-//		{
 			for(int z = -1; z<2; z++)
 				for(int s = -1; s<2; s++)
 				{	if(z==0 && s == 0) continue;
@@ -94,9 +93,9 @@ public class Spieler implements OthelloSpieler
 					}
 				}
 		
-//			}
 		return drehsteine;
 	}
+	
 	public BewerteterZug bewerteZug (Farbe spieler, int suchtiefe, Brett brett)
 	{
 		ArrayList<Zug> zuege = moeglicheZuege(spieler);
@@ -104,7 +103,7 @@ public class Spieler implements OthelloSpieler
 		BewerteterZug bestZug = new BewerteterZug();
 		
 		bestZug.setBewertung(10000);
-		if (spieler == Farbe.SCHWARZ)
+		if (spieler == gegnerFarbe)
 			bestZug.setBewertung(-10000);
 		boolean passen = true;
 		
@@ -118,9 +117,8 @@ public class Spieler implements OthelloSpieler
 			
 			if (suchtiefe > 1) 
 			{
-				Farbe rekSpieler = Farbe.WEISS;
-				if (spieler == Farbe.WEISS)
-					rekSpieler = Farbe.SCHWARZ;
+				Farbe rekSpieler = (spieler == Farbe.WEISS) ? Farbe.SCHWARZ : Farbe.WEISS;
+				
 				rekZug = bewerteZug(rekSpieler, suchtiefe - 1, kopie);
 				rekZug.setZug(zug);
 			}
@@ -128,11 +126,11 @@ public class Spieler implements OthelloSpieler
 			{
 				rekZug = new BewerteterZug();
 				rekZug.setZug(zug);
-				rekZug.setBewertung(kopie.bewerte());
+				rekZug.setBewertung(kopie.rating());
 			}
-			if (spieler == Farbe.SCHWARZ && rekZug.getBewertung() > bestZug.getBewertung())
+			if (spieler == gegnerFarbe && rekZug.getBewertung() > bestZug.getBewertung())
 				bestZug = rekZug;
-			if (spieler == Farbe.WEISS && rekZug.getBewertung() < bestZug.getBewertung())
+			if (spieler == unsereFarbe && rekZug.getBewertung() < bestZug.getBewertung())
 				bestZug = rekZug;
 		}
 		
@@ -140,14 +138,15 @@ public class Spieler implements OthelloSpieler
 		{
 			bestZug = new BewerteterZug();
 			bestZug.setZug(new Zug(-1, -1));
-			bestZug.setBewertung(brett.bewerte());
+			bestZug.setBewertung(brett.rating());
 		}
 		return bestZug;
 	
 	}
 	
 	public ArrayList<Zug> moeglicheZuege (Farbe spieler)
-	{	ArrayList<Zug> zuege = new ArrayList<Zug>();
+	{	
+		ArrayList<Zug> zuege = new ArrayList<Zug>();
 		for(int i = 0; i<8; i++)
 			for(int k = 0 ; k<8; k++)
 			{

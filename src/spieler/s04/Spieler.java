@@ -98,7 +98,7 @@ public class Spieler implements OthelloSpieler
 	
 	public BewerteterZug bewerteZug (Farbe spieler, int suchtiefe, Brett brett)
 	{
-		ArrayList<Zug> zuege = moeglicheZuege(spieler);
+		ArrayList<Zug> zuege = moeglicheZuege(spieler, brett);
 		
 		BewerteterZug bestZug = new BewerteterZug();
 		
@@ -144,7 +144,7 @@ public class Spieler implements OthelloSpieler
 	
 	}
 	
-	public ArrayList<Zug> moeglicheZuege (Farbe spieler)
+	public ArrayList<Zug> moeglicheZuege (Farbe spieler, Brett brett)
 	{	
 		ArrayList<Zug> zuege = new ArrayList<Zug>();
 		for(int i = 0; i<8; i++)
@@ -164,10 +164,13 @@ public class Spieler implements OthelloSpieler
 	
 	public Brett setzeStein(Zug zug, Farbe spieler, Brett ausgangsbrett)
 	{
-		ausgangsbrett.getSpielfeld()[zug.getZeile()][zug.getSpalte()] = spieler;
-		ArrayList<Zug> drehsteine = dreheSteine(zug, spieler);
-		for(int i = 0; i<drehsteine.size(); i++)
-			ausgangsbrett.getSpielfeld()[drehsteine.get(i).getZeile()][drehsteine.get(i).getSpalte()] = spieler;
+		if(imFeld(zug))
+		{
+			ausgangsbrett.getSpielfeld()[zug.getZeile()][zug.getSpalte()] = spieler;
+			ArrayList<Zug> drehsteine = dreheSteine(zug, spieler);
+			for(int i = 0; i<drehsteine.size(); i++)
+				ausgangsbrett.getSpielfeld()[drehsteine.get(i).getZeile()][drehsteine.get(i).getSpalte()] = spieler;
+		}
 		return ausgangsbrett;
 	}
 	

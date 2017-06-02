@@ -19,11 +19,11 @@ public class OthelloWettkampf
         new ArrayList<OthelloSpieler>();
     //Die Spieler
     spieler.add(new spieler.s04.Spieler(7)); //Suchtiefe Default
-    spieler.add(new spieler.Referenzspieler(2)); //Suchtiefe 9
+    spieler.add(new spieler.Rumpfspieler()); //Suchtiefe 9
     
     
     new rahmen.OthelloArena(150,  //Gesamtbedenkzeit in Sekunden 
           spieler,                //Spielerliste 
-          true);                  //debug aus
+          false);                  //debug aus
   }
 }
